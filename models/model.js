@@ -1,3 +1,4 @@
+const { timeStamp } = require('console');
 const mongoose = require('mongoose');
 const { type } = require('os');
 
@@ -226,13 +227,45 @@ const counsellorpupilsSchema = new mongoose.Schema({
     }
 })
 
+const messageSchema = new mongoose.Schema({
+    studentid: {
+        required: true,
+        type: Number
+    },
+    studentname: {
+        required: true,
+        type: String
+    },
+    counsellorname: {
+        required: true,
+        type: String
+    },
+    counsellorid: {
+        required: true,
+        type: Number
+    },
+    chatData: [{
+        chattertype: {
+            type: String
+        },
+        message: {
+            type: String
+        },
+        time: {
+            type: Date,
+            // default: Date.now
+        }
+    }]
+})
+
 const studentDatas = mongoose.model('StudentData', studentSchema)
 // const questionDatas = mongoose.model('QuestionData', questionSchema)
 const studentresultData = mongoose.model('QuestionData', studentresultSchema)
 const counsellorDatas = mongoose.model('CounsellorData', counsellorSchema)
 const counsellorPupils = mongoose.model('CounsellorPupils', counsellorpupilsSchema)
+const messageData = mongoose.model('MessageData', messageSchema)
 
 
 module.exports = {
-    studentDatas, studentresultData, counsellorDatas, counsellorPupils
+    studentDatas, studentresultData, counsellorDatas, counsellorPupils, messageData
 }

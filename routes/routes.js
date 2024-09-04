@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { studentDatas, studentresultData, counsellorDatas, counsellorPupils } = require('../models/model');
+const { studentDatas, studentresultData, counsellorDatas, counsellorPupils, messageData } = require('../models/model');
 
 function randomString() {
     const randomStringOneLiner = Math.random().toString(36).substr(2, 10);
@@ -340,6 +340,17 @@ router.post('/postcode',async (req,res) => {
     }
 })
 
+// get the student riasec result, code and waec result
+router.get('/getcode/:id',async (req,res) => {
+    try{
+        const data = await studentresultData.findOne( { studentID : req.params.id} );
+         res.json(data);
+    }
+    catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 // FOR COUNSELLOR REGISTER AND LOGIN
 // --------------------------------------------------------------------------
 router.post('/postcounsellor', async (req, res) => {
@@ -432,21 +443,158 @@ router.get('/getAllCounsellors', async (req, res) => {
 router.post('/postpupilrequest', async (req, res) => {
     try {
         
-        // Create a new document
-        const data = new counsellorPupils({
-            studentID: req.body.studentID,
-            studentname: req.body.studentname,
-            counsellorname: req.body.counsellorname,
-            counsellorid: req.body.counsellorid,
-            completed: false,
-        });
+        const checkData = await counsellorPupils.findOne( { counsellorid : req.body.counsellorid, studentID: req.body.studentID} );
 
-        // Save the new document
-        const dataToSave = await data.save();
-        res.status(200).json(dataToSave);
+        if(checkData){
+            // Create a new document
+            const data = new counsellorPupils({
+                studentID: req.body.studentID,
+                studentname: req.body.studentname,
+                counsellorname: req.body.counsellorname,
+                counsellorid: req.body.counsellorid,
+                completed: false,
+            });
+
+            // Save the new document
+            const dataToSave = await data.save();
+            res.status(200).json(dataToSave);
+        }
+        else{
+            const mesage = "Request already posted";
+            res.status(200).json(mesage);
+        }
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 });
+
+//Get by counsellor by cookie Method
+router.get('/getCounData/:id', async (req, res) => {
+    try{
+        const data = await counsellorDatas.findOne( { usercookie : req.params.id} );
+        const sanitizedData = {
+            fullname: data.username,
+            id:data.id
+        }
+        res.json(sanitizedData)
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+
+//Get all the pupils of a counsellor
+router.get('/getCounStudData/:id', async (req, res) => {
+    try{
+        const data = await counsellorPupils.find( { counsellorid : req.params.id} );
+        const sanitizedData = [];
+
+        for (let i = 0; i < data.length; i++) {
+        sanitizedData.push({
+            studentid: data[i].studentID,
+            studentname: data[i].studentname
+        });
+        }
+          
+          console.log("sanitizedData isz: ",sanitizedData);
+        res.json(sanitizedData)
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+
+
+// endpoint for counsellor sendng a message
+router.post('/counsSendmsg', async (req, res) => {
+    // Fetch the counsellors details using the cookie
+    // const data = await messageData.findOne( { usercookie : req.body.usercookie} );
+
+    // console.log("chatdetails: ", req.body)
+    // console.log("data gotten", data)
+
+    // if (data != null) {
+
+    //     let chattertype = "counsellor"
+    //     let message = req.body.message
+    //     let chattername = data.username
+    //     let chatterid = data.id
+    //     let time = Date.now
+        // update the document with the cookie
+    //     let chatMessage = {
+    //         chattername: chattername,
+    //         chattertype: chattertype,
+    //         chatterid: chatterid,
+    //         message: message,
+    //         time: time.toString()
+    //     }
+    //     console.log("length",data.chatData.length)
+    //     if( data.chatData.length == 0){
+    //     // console.log("Our Chat Data " , data.chatData,"type is ", typeof(data.chatData))
+    //     // let newData = [...data.chatData]
+    //     // newData.push(chatMessage)
+    //     // data.chatData = newData
+    //     data.chatData.push(chatMessage)
+    //     }
+    //     else{
+    //         let newData = []
+    //         newData.push(chatMessage)
+    //         data.chatData = newData
+    //     }
+    //     data.save()
+    //     res.status(200).send("Your Message is added")
+    // }
+    // else {
+    //     res.status(400).send("User Not Registered")
+    // } 
+    
+         try{   
+            const { studentid, counsellorid, chatData } = req.body;
+
+            // Check if a document with the same studentid and counsellorid exists
+            let message = await messageData.findOne({ studentid, counsellorid });
+
+            if (message) {
+                // If the document exists, update the chatData array
+                message.chatData = message.chatData.concat(chatData);
+                await message.save();
+                res.status(200).json(message);
+            } else {
+
+                const newMessage = new messageData(req.body);
+                await newMessage.save();
+                res.status(201).json(newMessage);
+            }
+         }
+        catch(error){
+            // Handle any errors
+            res.status(500).json({ error: error.message });
+         }
+})
+
+
+// endpoint for counsellor getting/fetching the messages
+router.get('/counsGetmsg/:studentid/:counsellorid', async (req, res) => {
+     
+         try{   
+            const studentid = req.params.studentid
+            const counsellorid = req.params.counsellorid
+
+            // Check if a document with the same studentid and counsellorid exists
+            let message = await messageData.findOne({ studentid, counsellorid });
+            let messages = message.chatData
+           res.json(messages)
+         }
+        catch(error){
+            // Handle any errors
+            res.status(500).json({ error: error.message });
+         }
+})
+
+
+
+
+
+
 
 module.exports = router;
