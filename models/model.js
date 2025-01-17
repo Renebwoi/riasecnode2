@@ -1,13 +1,14 @@
 const { timeStamp } = require('console');
+const { application } = require('express');
 const mongoose = require('mongoose');
 const { type } = require('os');
 
-const studentSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     id: {
         required: true,
         type: Number
     },
-    username: {
+    email: {
         required: true,
         type: String
     },
@@ -19,148 +20,59 @@ const studentSchema = new mongoose.Schema({
         required: true,
         type: String
     },
-    email: {
+    admin: {
         required: true,
-        type: String
-    },
-    age: {
-        required: true,
-        type: Number
-    },
-    schoolname: {
-        required: true,
-        type: String
+        type: Boolean
     },
     usercookie: {
         type: String
     }
 })
 
-// const questionSchema = new mongoose.Schema({
-//     question: {
-//         required: true,
-//         type: String
-//     },
-//     category: {
-//         required: true,
-//         type: Number
-//     },
-//     id: {
-//         required: true,
-//         type: Number
-//     }
-// })
-
-const studentresultSchema = new mongoose.Schema({
-    studentname: {
-        required: true,
-        type: String
-    },
-    studentID: {
+const uploadDocumentSchema = new mongoose.Schema({
+    id:{
         required: true,
         type: Number
     },
-    riasecScore: {
-        realistic:{
-            type: Number
-        },
-        investigative: {
-            type: Number
-        },
-        artistic:{
-            type: Number
-        },
-        social:{
-            type: Number
-        },
-        enterprising:{
-            type: Number
-        },
-        conventional :{
-            type: Number
-        }
-    },
-    riasecCode: {
+    username:{
+        required: true,
         type: String
     },
-    waecResults: {
-        subject1:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        },
-        subject2:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        },
-        subject3:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        },
-        subject4:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        },
-        subject5:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        },
-        subject6:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        },
-        subject7:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        },
-        subject8:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        },
-        subject9:{
-            subjectName: {
-                type: String
-            },
-            subjectScore: {
-                type: String
-            }
-        }
+    applicationID:{
+        required: true,
+        type: String
+    },
+    idCardLink: {
+        required: true,
+        type: String
+    },
+    businessCertificateLink:{
+        required: true,
+        type: String
+    },
+    bankStatementLink: {
+        required: true,
+        type: String
+    },
+    LoanAmount: {
+        required: true,
+        type: String
+    },
+    LoanDuration: {
+        required: true,
+        type: String
+    },
+    interestRate: {
+        required: true,
+        type: String
+    },
+    PaymentPer: {
+        required: true,
+        type: String
     }
 })
 
-
-const counsellorSchema = new mongoose.Schema({
+const loanQuestionnaireSchema = new mongoose.Schema({
     id: {
         required: true,
         type: Number
@@ -169,103 +81,141 @@ const counsellorSchema = new mongoose.Schema({
         required: true,
         type: String
     },
-    password: {
-        required: true,
-        type: String
-    },
-    email: {
-        required: true,
-        type: String
-    },
-    phoneno: {
-        required: true,
-        type: Number
-    },
-    specialization: {
-        required: true,
-        type: String
-    },
-    email: {
-        required: true,
-        type: String
-    },
-    yearsOfExperience: {
-        required: true,
-        type: Number
-    },
     usercookie: {
-        type: String
-    }
-})
-
-const counsellorpupilsSchema = new mongoose.Schema({
-    studentname:{
         required: true,
         type: String
     },
-    studentID:{
-        required: true,
-        type: Number
-    },
-    counsellorname: {
-        required: true,
-        type: String
-    },
-    counsellorid: {
-        required: true,
-        type: Number
-    },
-    completed: {
-        required: true,
-        type: Boolean
-    },
-    reviewscore: {
-        type: Number
-    },
-    reviewcomment: {
-        type: String
-    }
-})
-
-const messageSchema = new mongoose.Schema({
-    studentid: {
-        required: true,
-        type: Number
-    },
-    studentname: {
-        required: true,
-        type: String
-    },
-    counsellorname: {
-        required: true,
-        type: String
-    },
-    counsellorid: {
-        required: true,
-        type: Number
-    },
-    chatData: [{
-        chattertype: {
+    personalInfo: {
+        fullname:{
+            required: true,
             type: String
         },
-        message: {
+        dateofbirth:{
+            required: true,
             type: String
         },
-        time: {
-            type: Date 
-            // default: Date.now
+        gender: {
+            required: true,
+            type: String
+        },
+        email: {
+            required: true,
+            type: String
+        },
+        phone: {
+            required: true,
+            type: String
+        },
+        residentAddress: {
+            required: true,
+            type: String
+        },
+        LGA: {
+            required: true,
+            type: String
+        },
+        state: {
+            required: true,
+            type: String
         }
-    }]
+    },
+    businessInfo: {
+        businessName: {
+            required: true,
+            type: String
+        },
+        businessAddress: {
+            required: true,
+            type: String
+        },
+        businessAge: {
+            required: true,
+            type: String
+        }, 
+        businessType: {
+            required: true,
+            type: String
+        },
+        businessIndustry: {
+            required: true,
+            type: String
+        },
+        businessLGA: {
+            required: true,
+            type: String
+        },
+        businessTown: {
+            required: true,
+            type: String
+        }
+    },
+    financeInfo: {
+        bankAccountQuestion: {
+            required: true,
+            type: String
+        },
+        digitalPaymentQuestion: {
+            required: true,
+            type: String
+        },
+        businessFinanceQuestion: {
+            required: true,
+            type: String
+        }
+    },
+    challengeInfo: {
+        biggestChallengesQuestion: {
+            required: true,
+            type: String
+        },
+        govtSupportQuestion: {
+            required: true,
+            type: String
+        },
+        businessGrowthQuestion: {
+            required: true,
+            type: String
+    }
+},
+    loanInfo: {
+        loanBeforeQuestion: {
+            required: true,
+            type: String
+        },
+        loanHowQuestion: {
+            required: true,
+            type: String
+        },
+        whyNoLoan: {
+            required: true,
+            type: String
+        }
+    },
+    regulatoryInfo: {
+        regulatoryChallengeQuestion: {
+            required: true,
+            type: String
+        }
+    },
+    dateSubmitted: {
+        type: Date,
+        default: Date.now
+    },
+    loanStatus: {
+        type:String,
+        default: "Submitted"
+    },
+    loanAmount: {
+        type: String,
+        default: "pending"
+    }
 })
 
-const studentDatas = mongoose.model('StudentData', studentSchema)
-// const questionDatas = mongoose.model('QuestionData', questionSchema)
-const studentresultData = mongoose.model('QuestionData', studentresultSchema)
-const counsellorDatas = mongoose.model('CounsellorData', counsellorSchema)
-const counsellorPupils = mongoose.model('CounsellorPupils', counsellorpupilsSchema)
-const messageData = mongoose.model('MessageData', messageSchema)
 
+const users = mongoose.model('UserData', userSchema)
+const loanQuestionnaire = mongoose.model('LoanQuestionnaire', loanQuestionnaireSchema)
+const uploadDocument = mongoose.model('uploadDocument', uploadDocumentSchema)
 
 module.exports = {
-    studentDatas, studentresultData, counsellorDatas, counsellorPupils, messageData
+    users, loanQuestionnaire, uploadDocument
 }
