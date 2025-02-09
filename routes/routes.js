@@ -202,8 +202,7 @@ router.post('/businessShow', async (req, res) => {
             loanInfo: req.body.loanInfo,
             regulatoryInfo: req.body.regulatoryInfo,
             username: req.body.username,
-            usercookie: req.body.usercookie,
-            loanStatus: randomDecision(5)
+            usercookie: req.body.usercookie
         });
 
         // Save the new document
