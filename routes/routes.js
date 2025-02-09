@@ -207,7 +207,7 @@ router.post('/businessShow', async (req, res) => {
 
         // Save the new document
         const dataToSave = await data.save();
-        // console.log("data saved", dataToSave)
+        console.log("data saved", dataToSave)
         res.status(200).json(dataToSave);
     } catch (error) {
         res.status(400).json({ message: error });
