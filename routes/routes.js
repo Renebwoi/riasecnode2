@@ -190,6 +190,7 @@ router.post('/businessShow', async (req, res) => {
 
         // Determine the new id
         const newId = lastRecord ? lastRecord.id + 1 : 1;
+        console.log("newId", newId)
 
         // Create a new document
         // console.log("req.body.personalInfo", req.body.personalInfo)
@@ -202,7 +203,8 @@ router.post('/businessShow', async (req, res) => {
             loanInfo: req.body.loanInfo,
             regulatoryInfo: req.body.regulatoryInfo,
             username: req.body.username,
-            usercookie: req.body.usercookie
+            usercookie: req.body.usercookie,
+            loanStatus: randomDecision(5)
         });
 
         // Save the new document
