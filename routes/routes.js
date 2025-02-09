@@ -210,7 +210,7 @@ router.post('/businessShow', async (req, res) => {
         // console.log("data saved", dataToSave)
         res.status(200).json(dataToSave);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error });
     }
 });
 
